@@ -1,0 +1,95 @@
+#!/usr/bin/python
+
+# Do not remove
+GOOGLE_LOGIN = GOOGLE_PASSWORD = AUTH_TOKEN = None
+
+import sys
+from pprint import pprint
+
+#Added to call the token-dispenser
+import shlex, subprocess, requests, time, os
+
+from config import *
+from googleplay import GooglePlayAPI
+from helpers import sizeof_fmt
+
+if (len(sys.argv) < 2):
+    print "Usage: %s packagename [filename]"
+    print "Download an app."
+    print "If filename is not present, will write to packagename.apk."
+    sys.exit(0)
+
+scriptpath = os.path.dirname(os.path.realpath(__file__))
+passpath = scriptpath +"/passwords.txt"
+propertiespath = scriptpath + "/config.properties"
+
+f = open(passpath, 'w') #truncates the file
+f.write(GOOGLE_LOGIN + " " + GOOGLE_PASSWORD + "\n")
+f.close
+
+f = open(propertiespath, 'w')
+f.write("spark-host=0.0.0.0\nspark-port=8080\nstorage=plaintext\nenable-email-retrieval=true\n");
+f.write("storage-plaintext-path=" + passpath + "\n")
+f.close
+
+print passpath
+
+my_env = os.environ.copy()
+my_env["DISPENSER_PROPERTIES"] = propertiespath
+my_env["DISPENSER_PASSES"] = passpath
+
+#dont forget to run mvn install on token-dispenser folder
+#cmd = "java -jar " + scriptpath + "/token-dispenser/target/token-dispenser.jar"
+cmd = "java -jar " + scriptpath + "/token-dispenser.jar"
+
+dispenser = subprocess.Popen(shlex.split(cmd), env=my_env) # this will launch detached
+
+packagename = sys.argv[1]
+
+if (len(sys.argv) == 3):
+    filename = sys.argv[2]
+else:
+    filename = packagename + ".apk"
+
+cmd = "http://localhost:" + TOKEN_PORT + "/token/email/" + GOOGLE_LOGIN
+print cmd
+r = None
+
+counter = 5
+while (r == None or r.status_code != 200) and counter >= 0:
+    print counter
+
+    try:
+        r = requests.get(cmd)
+
+    except Exception as err:
+        #print("Exception: {0}".format(err))
+        pass
+
+    time.sleep(1)
+    counter-=1
+
+print r.text
+
+# Connect
+api = GooglePlayAPI(ANDROID_ID)
+api.login(None, None, r.text)
+
+# Get the version code and the offer type from the app details
+m = api.details(packagename)
+
+#print m
+if len(m.docV2.offer) == 0:
+    print "[Could not get API details]"
+    sys.exit(3)
+
+doc = m.docV2
+#print doc
+vc = doc.details.appDetails.versionCode
+ot = doc.offer[0].offerType
+
+# Download
+print "Downloading %s..." % sizeof_fmt(doc.details.appDetails.installationSize),
+data = api.download(packagename, vc, ot)
+open(filename, "wb").write(data)
+print "Done"

@@ -1,0 +1,7 @@
+import sys
+SEPARATOR = ";"
+LANG = "en_US"
+ANDROID_ID = ""
+GOOGLE_LOGIN = ""
+GOOGLE_PASSWORD = ""
+TOKEN_PORT = "3000"
