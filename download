@@ -28,7 +28,7 @@ f.write(GOOGLE_LOGIN + " " + GOOGLE_PASSWORD + "\n")
 f.close
 
 f = open(propertiespath, 'w')
-f.write("spark-host=0.0.0.0\nspark-port=8080\nstorage=plaintext\nenable-email-retrieval=true\n");
+f.write("spark-host=0.0.0.0\nspark-port="+TOKEN_PORT+"\nstorage=plaintext\nenable-email-retrieval=true\n");
 f.write("storage-plaintext-path=" + passpath + "\n")
 f.close
 
