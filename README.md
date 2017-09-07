@@ -33,7 +33,6 @@ LANG = "en_US"
 ANDROID_ID = "ANDROID_ID"
 GOOGLE_LOGIN = "GOOGLE_EMAIL"
 GOOGLE_PASSWORD = "GOOGLE_PASS"
-TOKEN_PORT = "3000"
 ```
 
 Then simply add the project folder to the path and then execute like:
