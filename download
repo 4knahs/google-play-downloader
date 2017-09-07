@@ -37,6 +37,7 @@ print passpath
 my_env = os.environ.copy()
 my_env["DISPENSER_PROPERTIES"] = propertiespath
 my_env["DISPENSER_PASSES"] = passpath
+my_env["DISPENSER_PORT"] = TOKEN_PORT
 
 #dont forget to run mvn install on token-dispenser folder
 #cmd = "java -jar " + scriptpath + "/token-dispenser/target/token-dispenser.jar"
