@@ -2,11 +2,11 @@ Adapted from https://github.com/egirault/googleplay-api
 
 # Fixes
 
+* Added token dispenser (https://github.com/yeriomin/token-dispenser) to fix auth issues.
 * Fixed token parsing bug.
 * Stripped to bare download scripts.
 * Updated device UA.
 * More error statuses.
-* Fixed login issues of the original repo.
 
 # Install
 
