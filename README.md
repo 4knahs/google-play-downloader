@@ -8,6 +8,11 @@ Adapted from https://github.com/egirault/googleplay-api
 * Updated device UA.
 * More error statuses.
 
+The respective issues:
+
+* https://github.com/egirault/googleplay-api/issues/74
+* https://github.com/egirault/googleplay-api/issues/78 (partially)
+
 # Install
 
 In the project folder do:
